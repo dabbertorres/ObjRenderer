@@ -1,27 +1,33 @@
 ﻿using System.Collections.Generic;
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace ObjRenderer
 {
 	public class Mesh
 	{
-		public readonly Vector3[] vertices;
-		public readonly Color4[] colors;
-		public readonly uint[] indices;
+		public readonly List<Vector4> vertices;
+		public readonly List<Vector3> textureVertices;
+		public readonly List<Vector3> normals;
+		public readonly List<uint> vertexIndices;
+		public readonly List<uint> textureIndices;
+		public readonly List<uint> normalIndices;
 
 		public readonly BoundingBox boundingBox;
 
-		public Mesh(List<Vector3> vertices, List<Color4> colors, List<uint> indices)
+		public Mesh(List<Vector4> vertices, List<Vector3> textureVertices, List<Vector3> normals,
+					List<uint> vertexIndices, List<uint> textureIndices, List<uint> normalIndices)
 		{
-			this.vertices = vertices.ToArray();
-			this.colors = colors.ToArray();
-			this.indices = indices.ToArray();
+			this.vertices = vertices;
+			this.textureVertices = textureVertices;
+			this.normals = normals;
+			this.vertexIndices = vertexIndices;
+			this.textureIndices = textureIndices;
+			this.normalIndices = normalIndices;
 
-			Vector3 min = vertices[0];
-			Vector3 max = vertices[0];
+			Vector4 min = vertices[0];
+			Vector4 max = vertices[0];
 			
-			foreach (Vector3 v in vertices)
+			foreach (Vector4 v in vertices)
 			{
 				if (v.X <= min.X)
 				{

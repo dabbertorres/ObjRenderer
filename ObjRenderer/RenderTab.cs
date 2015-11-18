@@ -126,6 +126,7 @@ namespace ObjRenderer
 			GL.LoadIdentity();
 
 			GL.Scale(scale, scale, 1);
+			GL.Translate(0, 0, scale);
 
 			GL.Translate(frustumCenter);
 			//GL.Translate(mesh.boundingBox.center);
@@ -135,35 +136,26 @@ namespace ObjRenderer
 				GL.Rotate(rot.angle, rot.axis);
 			}
 
-			// draw mesh
 			GL.EnableClientState(ArrayCap.VertexArray);
-			GL.VertexPointer(3, VertexPointerType.Float, 0, mesh.vertices);
 
-			if (mesh.colors.Length != 0)
-			{
-				GL.EnableClientState(ArrayCap.ColorArray);
-				GL.ColorPointer(4, ColorPointerType.Float, 0, mesh.colors);
-			}
-			else
-			{
-				GL.Color4(0.5f, 0.5f, 0.5f, 1f);
-			}
-			
-			GL.DrawElements(PrimitiveType.Triangles, mesh.indices.Length, DrawElementsType.UnsignedInt, mesh.indices);
+			// draw mesh
+			var meshVertices = mesh.vertices.ToArray();
+			GL.VertexPointer(3, VertexPointerType.Float, 0, meshVertices);
+			GL.Color4(0.5f, 0.5f, 0.5f, 1f);
+
+			var meshVertexIndices = mesh.vertexIndices.ToArray();
+            GL.DrawElements(PrimitiveType.Triangles, mesh.vertexIndices.Count, DrawElementsType.UnsignedInt, meshVertexIndices);
 
 			// draw bounding box
-			GL.VertexPointer(3, VertexPointerType.Float, 0, mesh.boundingBox.vertices);
+			var bbVertices = mesh.boundingBox.vertices.ToArray();
+			GL.VertexPointer(3, VertexPointerType.Float, 0, bbVertices);
 			GL.Color4(BoundingBox.drawColor);
-
-			GL.DrawElements(PrimitiveType.Lines, mesh.boundingBox.indices.Length, DrawElementsType.UnsignedInt, mesh.boundingBox.indices);
+			
+			var bbVertexIndices = mesh.vertexIndices.ToArray();
+			GL.DrawElements(PrimitiveType.Lines, mesh.boundingBox.indices.Count, DrawElementsType.UnsignedInt, bbVertexIndices);
 
 			// cleanup
 			GL.DisableClientState(ArrayCap.VertexArray);
-
-			if (mesh.colors.Length != 0)
-			{
-				GL.DisableClientState(ArrayCap.ColorArray);
-			}
 
 			// we're double-buffered
 			glControl.SwapBuffers();

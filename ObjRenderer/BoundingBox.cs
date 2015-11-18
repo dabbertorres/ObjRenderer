@@ -1,6 +1,8 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 
+using System.Collections.Generic;
+
 namespace ObjRenderer
 {
 	public class BoundingBox
@@ -10,10 +12,10 @@ namespace ObjRenderer
 		// order: left-bottom-back, right-bottom-back, left-top-back, right-top-back
 		//		  left-bottom-front, right-bottom-front, left-top-front, right-top-front
 		// using OpenGL coordinates: x -> right, y -> up, z -> out of screen
-		public readonly Vector3[] vertices;
-		public readonly uint[] indices;
+		public readonly List<Vector4> vertices;
+		public readonly List<uint> indices;
 
-		public readonly Vector3 center;
+		public readonly Vector4 center;
 
 		public float Length
 		{
@@ -30,11 +32,11 @@ namespace ObjRenderer
 			get { return vertices[7].Y - vertices[0].Y; }
 		}
 
-		public BoundingBox(Vector3 min, Vector3 max)
+		public BoundingBox(Vector4 min, Vector4 max)
 		{
 			// 12 pairs of vertices to make a cube
-			vertices = new Vector3[8];
-			indices = new uint[24]
+			vertices = new List<Vector4>(new Vector4[8]);
+			indices = new List<uint>(24)
 			{
 				// from left-bottom-back
 				0, 1,
@@ -55,27 +57,38 @@ namespace ObjRenderer
 				4, 6,
 			};
 
-			Vector3 diag;
-			Vector3.Subtract(ref max, ref min, out diag);
+			Vector4 diag;
+			Vector4.Subtract(ref max, ref min, out diag);
 
-			Vector3 xd = new Vector3(diag.X, 0, 0);
-			Vector3 yd = new Vector3(0, diag.Y, 0);
-			Vector3 zd = new Vector3(0, 0, diag.Z);
+			Vector4 xd = new Vector4(diag.X, 0, 0, 1);
+			Vector4 yd = new Vector4(0, diag.Y, 0, 1);
+			Vector4 zd = new Vector4(0, 0, diag.Z, 1);
 
 			vertices[0] = min;
 
-			Vector3.Add(ref min, ref xd, out vertices[1]);
-			Vector3.Add(ref min, ref yd, out vertices[2]);
-			Vector3.Subtract(ref max, ref zd, out vertices[3]);
-			Vector3.Add(ref min, ref zd, out vertices[4]);
-			Vector3.Subtract(ref max, ref yd, out vertices[5]);
-			Vector3.Subtract(ref max, ref xd, out vertices[6]);
+			Vector4 temp;
+			Vector4.Add(ref min, ref xd, out temp);
+			vertices[1] = temp;
+
+            Vector4.Add(ref min, ref yd, out temp);
+			vertices[2] = temp;
+
+            Vector4.Subtract(ref max, ref zd, out temp);
+			vertices[3] = temp;
+
+            Vector4.Add(ref min, ref zd, out temp);
+			vertices[4] = temp;
+
+            Vector4.Subtract(ref max, ref yd, out temp);
+			vertices[5] = temp;
+
+            Vector4.Subtract(ref max, ref xd, out temp);
+			vertices[6] = temp;
 
 			vertices[7] = max;
-
-			Vector3 temp;
-			Vector3.Divide(ref diag, 2, out temp);
-            Vector3.Add(ref min, ref temp, out center);
+			
+			Vector4.Divide(ref diag, 2, out temp);
+            Vector4.Add(ref min, ref temp, out center);
 		}
 	}
 }

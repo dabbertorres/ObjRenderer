@@ -50,7 +50,9 @@
   <ItemGroup>
     <Compile Include="BoundingBox.cs" />
     <Compile Include="InputHandler.cs" />
+    <Compile Include="Material.cs" />
     <Compile Include="Mesh.cs" />
+    <Compile Include="MtlLoader.cs" />
     <Compile Include="ObjLoader.cs" />
     <Compile Include="RenderTab.cs" />
     <Compile Include="Rotation.cs" />
