@@ -13,8 +13,8 @@ namespace ObjRenderer
 		public delegate void MouseMoved(int x, int y);
 		public delegate void FileDropped(string file);
 
-        public readonly Dictionary<Keys, KeyPressed> keyDownListeners;
-        public readonly Dictionary<Keys, KeyPressed> keyUpListeners;
+		public readonly Dictionary<Keys, KeyPressed> keyDownListeners;
+		public readonly Dictionary<Keys, KeyPressed> keyUpListeners;
 
 		public readonly Dictionary<MouseButtons, MousePressed> mouseDownListeners;
 		public readonly Dictionary<MouseButtons, MousePressed> mouseUpListeners;
